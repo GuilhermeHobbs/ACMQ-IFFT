@@ -1,0 +1,43 @@
+{
+Versao 1.1 de 26/06/92 Pode ser inicializado com desenho na tela
+}
+
+CONST
+  maxsprites=2;
+  sprite:ARRAY[1..8] OF PointType=((x:0;y:0),(x:8;y:0),(x:6;y:2),(x:8;y:4),
+                                   (x:4;y:8),(x:2;y:6),(x:0;y:8),(x:0;y:0));
+VAR
+  xseta,yseta:ARRAY[1..maxsprites] OF INTEGER;
+  tamanho:WORD;
+  pt:POINTER;
+
+PROCEDURE PutSprite(x,y,i:INTEGER);
+BEGIN
+  IF xseta[i]>-1 THEN PutImage(xseta[i],yseta[i],pt^,XORput);
+  xseta[i]:=x;
+  yseta[i]:=y;
+  PutImage(x,y,pt^,XORput);
+END;
+
+PROCEDURE ResetSprite(i:INTEGER);
+BEGIN
+  xseta[i]:=-1000;
+END;
+
+PROCEDURE InitSprites(borda,fundo:INTEGER);
+VAR
+  i:INTEGER;
+  temp:ARRAY[1..100] OF BYTE;
+BEGIN
+  tamanho:=ImageSize(0,0,8,8);
+  GetImage(0,0,8,8,temp);
+  SetFillStyle(EmptyFill,0);
+  Bar(0,0,8,8);
+  SetColor(borda);
+  SetFillStyle(SolidFill,fundo);
+  FillPoly(SizeOf(sprite) div SizeOf(PointType),sprite);
+  GetMem(pt,tamanho);
+  GetImage(0,0,8,8,pt^);
+  PutImage(0,0,temp,NormalPut);
+  FOR i:=1 TO maxsprites DO ResetSprite(i);
+END;

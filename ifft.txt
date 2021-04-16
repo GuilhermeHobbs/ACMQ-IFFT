@@ -1,0 +1,459 @@
+Program IFFT
+------------
+
+By Antonio Carlos M. de Queiroz
+Associate Professor
+Universidade Federal do Rio de Janeiro
+
+Documentation for version 1.6
+
+The  IFFT program analyses linear circuits,  computing  transfer
+functions in Laplace transform. From the transfer functions,  in
+a  ratio-of-polynomials form, the program can compute poles  and
+zeros an plot frequency response graphs.
+
+The  program  was developed as a tool for fast  verification  of
+continuous  time  filter designs. It is also  useful  for  other
+purposes, as:
+
+-    Stability analysis by direct poles and zeros calculation.
+-    Studies about frequency compensation of amplifiers.
+-    Studies about compensation of operational amplifier GB  and
+     input and output impedance effects in filters.
+-    Studies  about  the effects of parasitic  capacitances  and
+     resistances in filters.
+-    Monte  Carlo analysis and study of the effect of  component
+     variations.
+
+User Interface:
+---------------
+
+The  program uses a graphical user interface with windows,  that
+works in the following way:
+
+-    To  move a window, press the left mouse button anywhere  in
+the window frame and move the mouse with the button pressed.
+-     To resize a window, press the right mouse button close  to
+the  right bottom corner of the window and move the  mouse  with
+the button pressed.
+-     To close a window, press the middle mouse button  anywhere
+in the window frame.
+-     Window movements can be impossible due to  memory  limita-
+tions,  and in these cases a beep sounds. To free memory,  close
+some windows, put windows directly over the background, or remo-
+ve references.
+-    Press command buttons with the left mouse button.
+-     Access text fields pressing the left mouse button  in  the
+field area. The mouse cursor disappears until the Return key  is
+pressed,  ending the edition. The Esc key clears the field,  and
+Ctrl-R recovers the last text entered. Numerical fields work  in
+the  same way, but the edition ends only when a valid number  is
+entered.
+-     To open a menu, press the right mouse button over the  in-
+terface object that have the desired one. Select the item moving
+the  mouse and accept it by pressing the left mouse  button.  To
+dismiss  the menu without accepting a choice, press  the  middle
+mouse  button. A ">" at the right of a menu item indicates  that
+there  is  a  submenu, accessible by pressing  the  right  mouse
+button again.
+-    Only the controls in totally exposed windows are immediate-
+ly  accessible.  An attempt to access a control in  a  partially
+covered  window will first cause its movement to the  front,  if
+possible.
+
+A  mouse  is required for optimal performance, but  the  program
+includes  a mouse emulator driven from the keyboard. The  cursor
+keys command the emulated mouse cursor. The keys Return,  Space,
+and Esc emulate the mouse buttons left, middle, and right,  res-
+pectively.  The cursor step is selected by the keys  Home,  PgDn
+and  PgUp. When the Shift key is pressed or CapsLock is  active,
+the buttons work in toggle mode, so a button continuously  pres-
+sed  can be simulated. The mouse emulator is disabled,  and  the
+keyboard works normally when ScrollLock is active.
+
+The main interface element of the program is a menu,  accessible
+in the frames of all the windows. All the functions can be star-
+ted  from there. Some open dialog boxes, some  act  immediately,
+and  some have submenus. The program always gives some  feedback
+after any command. There are some special commands not listed in
+the menus and dialog boxes, listed below.
+
+A  two-buttons mouse can also be used. Windows and menus can  be
+dismissed by pressing both buttons simultaneously.
+
+Keyboard commands in the frequency response graph:
+--------------------------------------------------
+
+A/R - Reduces/increases the maximum frequency.
+</> - Moves down/up the frequency range.
++/- - Reduces/increases the maximum gain.
+G - Toggles the drawing of a grid.
+F - Toggles the plotting of phase curves.
+T - Toggles the plotting of group delay curves.
+L - Frequency scale logarithmic/linear.
+Vertical arrows - Move the gain curve.
+Horizontal arrows - Move the cursor.
+Ctrl- horizontal arrows - Move the cursor faster.
+Tab - Changes the selected gain curve.
+Z - Zoom out.
+
+Keyboard commands in the poles and zeros graph:
+-----------------------------------------------
+
+Arrows- Move the plot.
++/- - zoom in/out.
+
+Mouse commands:
+---------------
+
+In the two graphs, the mouse moves a cursor and controls a  zoom
+function.
+
+Input:
+------
+
+The program begins by opening the frequency response window  and
+the  directory window. In the directory window, a  netlist  file
+name  can be selected with the mouse (left button) or typed  di-
+rectly.  The mask field can be used anytime to look at disk  di-
+rectories.  The netlist field can be used anytime to change  the
+circuit being analyzed.
+
+The  program accepts as input a circuit description file in  the
+format generated by the EdFil editor program. It is a text  file
+with  the following format. All the element values in Ohms,  Fa-
+rads, Henrys, Amperes, and Volts:
+
+First line: Number of nodes, excluding the reference (node 0).
+Following lines: One element per line:
+
+-    Resistor:
+     R<name> <node1> <node2> <R>
+-    Inductor:
+     L<name> <node1> <node2> <L>
+-    Capacitor:
+     C<name> <node1> <node2> <C>
+-    Transformer with inductances L11, L22, and coupling k12:
+     K<name> <node1+> <node1-> <node2+> <node2-> <L11> <L22> <k12>
+-    Gyrator, with gyration resistance Rg:
+     Y<name> <node1+> <node1-> <node2+> <node2-> <Rg>
+-    Voltage controlled voltage source (voltage amplifier):
+     E<name> <nodeV+> <nodeV-> <nodev+> <nodev-> <Av>
+-    Current controlled current source (current amplifier):
+     F<name> <nodeI+> <nodeI-> <nodei+> <nodei-> <Ai>
+-    Voltage controlled current source (transconductor):
+     G<name> <nodeI+> <nodeI-> <nodeV+> <nodeV-> <Gm> [<gc>]
+-    Current controlled voltage source (transresistor):
+     H<name> <nodeV+> <nodeV-> <nodei+> <nodei->
+-    Operational  amplifier, with gain GB/s (GB in  rad/s)  and
+     output resistance Ro:
+     A<name> <nodev-> <nodev+> <nodeV+> <GB> <Ro>
+     Or:
+     A<name> <nodeV+> <nodeV-> <nodev-> <nodev+> <GB> <Ro> 
+-    Ideal operational amplifier: nullator-norator model:
+     O<name> <nodev-> <nodev+> <nodeV+>
+     Or:
+     O<name> <nodeV+> <nodeV-> <nodev-> <nodev+> 
+-    Bipolar transistor: hybrid h model
+     Q<name> <nodeC> <nodeB> <nodeE> <hfe> <hie> <hre> <hoe>
+-    MOS transistor:
+     M<name> <nodeD> <nodeG> <nodeS> <Gm> <Gds>
+-    Current source:
+     I<name> <node+> <node-> <I>
+-    Voltage source:
+     V<name> <node+> <node-> <V>
+-    Voltage source with series resistor (V=1 is the default):
+     Z<name> <node-> <node+> <Rs> [<V>]
+-    Comment: *<comment>
+
+Other elements can be built with combinations of these elements.
+Note that the transistor models do not include capacitances, but
+they  can  be  added explicitly. Note  also  that  the  current-
+controlled sources have the current in a short-circuit branch as
+input.
+Two forms for the operational amplifiers are accepted. The forms
+with 4 nodes have floating input and output.  The  forms with  3
+terminals have grounded output.  The order of the  nodes is dif-
+ferent to keep compatibility with older versions.
+<gc> for the transconductor is an optional common-mode transcon-
+ductance. It produces identical currents at both outputs, coming
+from the ground, with value gc*(V+ + V-)/2, added to  the normal
+current.  This is useful for simulation of balanced transconduc-
+tors.
+
+Analysis method:
+----------------
+
+The program operates with a version of the modified nodal analy-
+sis  method, so the currents in voltage sources and in  control-
+ling  short circuits are computed. Their values can be  accessed
+as "nodal voltages" in nodes above the last node of the circuit.
+The  program lists while reading the netlist what are  the  node
+numbers  assigned to each current. Ideal operational  amplifiers
+are  treated as nullator-norator pairs in a more efficient  way,
+and their output currents are not computed.
+
+When  the  Analyze button in the analysis parameters  window  is
+pressed,  the  circuit is analyzed in a  number  of  frequencies
+equally  spaced over the unit circle. From the obtained  values,
+the numerator and denominator polynomials in "s" of the transfer
+functions  in  Laplace transform are recovered by  Fast  Fourier
+Transforms (FFT), and listed in the messages window. The comple-
+te analysis is made only when changes in the analysis parameters
+invalidate anterior analysis results.
+
+The method is precise, but can present numerical problems if the
+circuit is not adequately normalized. In the analysis parameters
+window there are some fields that can be initialized with values
+that  control the precision of the analysis. The default  values
+are  usually convenient for normalized circuits. The meaning  of
+the items in this window are:
+
+-     Frequency normalization factor: Factor used  to  normalize
+the  circuit  in frequency. The ideal value is  the  geometrical
+mean  of  the circuit poles and zeros. After the  analysis,  the
+program  lists what would be the ideal values for the  numerator
+and  denominator,  if applicable. For usual circuits,  the  used
+value  must be within a decade of the ideal values for  reliable
+results. Some variations on the factor to verify if the  program
+insists  in  the same ideal values is recommended  when  in  the
+analysis of high order circuits with poles and zeros spread over
+several magnitude orders.
+-     Impedance normalization factor: Factor used  to  normalize
+the circuit in impedance. The same observations apply.
+-     Estimated numerator and denominator degrees:  The  program
+computes  the  maximum possible denominator degree  for  voltage
+transfer functions in the circuit based on a normal tree, listed
+after the netlist in the messages window. This value is  correct
+for  non-pathological circuits, and the program will not  accept
+as  valid  any  analysis resulting in  a  different  value.  The
+estimated numerator degree must be set by the user if the option
+of  forcing  degrees is used. In circuits  where  the  numerator
+degree  is  higher than the denominator  degree,  the  numerator
+degree  must  be set to the correct value, or the  analysis  may
+result wrong.
+-    Force degrees option, and numerator and denominator disper-
+sion  factors:  The  analysis  method  produces  polynomials  of
+degrees that can be higher than the correct ones, and so must be
+cleaned  of  numerical residues. The dispersion factors  can  be
+used  for this purpose. They define the maximum allowable  ratio
+among  polynomial  coefficients (normalized), and  are  used  to
+eliminate  too  small  coefficients from  the  polynomials.  The
+default settings are usually enough for normalized circuits.  In
+some cases, it is more practical to directly force the numerator
+and  denominator degrees (to the estimated values, that must  be
+known),  as  in  the analysis of complex  amplifiers  with  many
+natural  frequencies  widely spaced, or circuits  with  nonideal
+operational amplifiers.
+
+References:
+-----------
+
+Frequency  response  plots, and poles and zeros  plots,  can  be
+compared  with saved references. The references can be  obtained
+from the present analysis or from saved files. It is possible to
+analyze a circuit, save the results as a reference, edit some of
+the component values, reanalize, and plot the new results compa-
+red with the saved ones. The references are enumerated from 1 to
+a maximum of 250 or less, depending on the available memory. The
+references  are  also used in the value sweep  and  Monte  Carlo
+analysis.
+
+Edition:
+--------
+
+The circuit values can be edited in the edit window. The edition
+causes  the invalidation of the last analysis, and  the  circuit
+must be reanalized. The edited circuit cannot be saved.
+
+Sweep:
+------
+
+There  is an option of sweeping a value over a  specified  range
+(in  the edit window). The results are saved as references,  and
+subsequent plotting commands produce families of curves  showing
+the results. The sweep range can be specified by absolute limits
+or  percentages of the normal value. The sweep can be linear  or
+logarithmic.  The original circuit is retained, but must be  re-
+analized  if its curves are to appear in the plots. All the  re-
+ferences are cleared before a sweep.
+
+Monte Carlo analysis:
+---------------------
+
+A   set  of  circuits  with  element  values  within   specified
+tolerances  is  automatically generated and  analyzed.  All  the
+results are stored as references, as in the sweep analysis.  The
+variabilities  of  certain groups of elements can  be  specified
+independently,  and  uniform or Gaussian  distributions  can  be
+used. In the Gaussian distribution, the specified  variabilities
+correspond to three standard deviations. There is a menu item in
+the references submenu that can be used to save all the frequen-
+cy  responses, poles, and zeros resulting from the  analysis  to
+files.  The  files can be used for comparison with  the  results
+obtained by sensitivity analysis with the SENSI program, by  the
+use of the CPSENSI and CPSPZ programs. (See the SENSI package at
+the ftp site coe.ufrj.br, directory pub/acmq.)
+
+Output files:
+------------
+
+All  the results can be saved, in separate text files  according
+to the type of result. The names are given automatically. It  is
+also possible to save all the messages in the message window  as
+a file. The polynomials and roots are saved in normalized  form.
+The  normalization factor used is also saved at the end  of  the
+files. The reference poles and zeros are saved unnormalized.
+
+Observations:
+-------------
+
+The program can have problems in finding poles and zeros in some
+high-order circuits. In these cases it will lower the  tolerance
+of the roots until it can solve for them, and the final  results
+may be inaccurate. It is important to turn on the automatic pole
+and  zero  computation (in the analysis window)  only  when  the
+frequency normalization factor is correctly adjusted,  otherwise
+an  irrecoverable  overflow error may occur. For  comparison  of
+results, the program can use two different methods for computing
+polynomial  roots (set in the root parameters window).  The  de-
+fault  method is the most reliable, and slower, one.  The  poles
+and  zeros  option in the main menu causes  the  computation  of
+poles and zeros of the present function and of all the  referen-
+ces,  if  they  were not already computed.  The  changing  of  a
+parameter in the roots parameters window causes the invalidation
+of the poles and zeros of the present function, but not the ones
+of the references. This is to allow easy comparison of results.
+
+The  program will drive any graphic board supported by the  .BGI
+graphic  drivers  (Turbo Pascal 7.0), up to  640x480  16  colors
+mode.  The highest resolution mode will be used by default,  but
+this can be overridden in the command line:
+
+                >IFFT <file> <driver> <mode>
+
+This  will copy the name <file> to the netlist name text  field,
+and initialize the graphic system with the driver and mode  num-
+bers given (Ex: "1 1" = CGA 320x200 (...), "1 4" = CGA  640x200,
+"3  1"  = EGA 640x350, "2 5" = MCGA 640x480, etc.)  The  command
+line commands are optional. The graphics drivers must be on  the
+current directory or in a path pointed by the environment varia-
+ble TPBGI (Use the DOS "set" command to create it).
+
+The  IFFT  program is in continuous evolution  since  its  first
+version,  written  in BASIC for an HP-75 computer in  1984.  The
+program  was ported to a PC, rewritten in Turbo Pascal,  and  in
+1992  rewritten with the new graphical interface, also in  Turbo
+Pascal.
+
+The EdFil editor program:
+-------------------------
+
+The EdFil editor can be used to generate the input net-list file
+for  the IFFT program, and also for other programs,  even  SPICE
+(with some editing). It was written after the conclusion that it
+is  virtually impossible to write a textual netlist for  a  non-
+trivial  circuit without errors. Its use is recommended for  any
+circuit analysis.
+
+The circuit is drawn on the screen using the cursor keys and the
+selected  keyboard  keys  listed at the  bottom  of  the  editor
+screen. A help screen is assessed by the ? key. Names and  para-
+meters  for the elements are given by moving the cursor  to  the
+component and touching the Return key, or by Ctrl-X, that causes
+the program to ask parameters for all the visible elements.  The
+best method is usually to firstly draw all the circuit and later
+give the parameters. There are default names and parameters  for
+all  elements. The parameters are a text, and are reproduced  in
+the net-list as given, unless for formulae, that must be  enclo-
+sed in parenthesis.
+
+Once  drawn the circuit, the net-list is generated with  Ctrl-Q.
+The  program then asks the names of the files where to save  the
+circuit  description (.cir file) and the net-list  (.net  file).
+After this, any program can be executed while the editor remains
+resident  in memory, with execution returning later to the  edi-
+tor.
+
+An important feature of the program is the optional use of  for-
+mulae in the parameters. Any mathematical expression using cons-
+tants and values given in a value list can be used for a numeri-
+cal  parameter.  The expressions are evaluated in  the  net-list
+generation. This allows easy use of component value lists  gene-
+rated by synthesis programs, or even the use of EdFil as a  syn-
+thesis  program,  with components parameters  given  by  project
+formulae.  The  "=" sign can be used in formulas to  create  new
+values in the value list. Use resistors with both nodes grounded
+to create sets of values in this way, and operate the program as
+a simple spreadsheet. Evaluation is from bottom to top, left  to
+right.
+
+The  default screen mode selection can be overridden as  in  the
+IFFT  program.  The .BGI files must be present  on  the  default
+drive or in the path indicated by the DOS variable TPGBI.
+
+Contacting the author:
+----------------------
+
+Comments  and  doubts about the programs shall be  sent  to  the
+author:
+
+Dr. Antonio Carlos M. de Queiroz
+Programa de Engenharia Eletrica - COPPE
+Universidade Federal do Rio de Janeiro
+CP 68504
+21945-970 Rio de Janeiro, RJ, Brazil
+E-mail: acmq@coe.ufrj.br
+FTP: coe.ufrj.br, directory pub/acmq
+WWW: http://www.coe.ufrj.br/~acmq
+
+Files on the distribution compressed file:
+------------------------------------------
+
+IFFT.EXE: Protected mode version (386 up).
+EDFIL.EXE: Circuit editor program.
+*.BGI: Graphics drivers.
+LITT.CHR: Font for the messages window.
+*.CIR: Circuit files em EdFil format.
+*.NET: NetList files.
+*.VAL: Value list files for EdFil.
+*.TXT: Documentation.
+RTM.EXE, DPMI16BI.OVL: Protected mode drivers.
+
+Licensing
+---------
+
+The IFFT program can be used and distributed free of charge, for
+educational purposes, as long as it is not changed, and referen
+ce is made in any work done with its help. All other rights  are
+reserved. For commercial uses, contact the author.
+
+The author believes that the program works correctly, but cannot
+be  responsible  for  any losses due to  possible  bugs  in  the
+program that escaped his attention.
+
+Users  are encouraged to send to the author a letter  or  e-mail
+message  telling where the program is being used, and  for  what
+purpose.
+
+Version information
+-------------------
+
+Version 1.6: Transformer with letter "K".
+Version 1.5b:  The nonideal operational  amplifier may have four
+nodes too.
+Version 1.5a: The  transconductor has a common-mode transconduc-
+tance, the operational amplifier may have 4 nodes, and  comments
+are accepted.
+Version  1.4:  The  transformer  is  treated  by  the   coupling
+coefficient.
+Version 1.3b: A bug in the inclusion of amplifiers in the normal
+tree was corrected.
+Version 1.3a: A bug in Gds in the MOS transistor was corrected.
+Version  1.3:  Complexity order estimation improved  by  a  more
+general  algorithm  for the generation of the normal  tree.  The
+program  will not anymore underestimate the order.  Monte  Carlo
+analysis introduced.
+
+ACMQ - 7 March 2001
+Last update: 22/06/2011

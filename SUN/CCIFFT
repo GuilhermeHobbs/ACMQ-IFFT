@@ -1,0 +1,8 @@
+#! /bin/csh
+
+alias rm rm
+rm ifft
+alias rm rm -i
+gcc -Wall -O2 -target sun4 ifft.c -o ifft -I/usr/openwin/include  -lxview -lolgx -lX11 -lm
+ifft &
+

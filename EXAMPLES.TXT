@@ -1,0 +1,37 @@
+Some examples to test the IFFT program:
+
+To view or edit the circuits, use the EdFil program. Some examples have
+formulas for the element values. The corresponding value list (.val) must be
+read by the EdFil program (^U) before the netlist generation (^Q).
+
+el6:
+Conventional elliptic 6th-order antimetrical ladder low-pass filter,
+normalized for passband end at 1 rad/s.
+To analyze, select the name el6.net from the directory menu, and press
+the buttons Analyze and Plot when they appear. The output node number is 1.
+
+el6x:
+The same filter, realized by a symmetrical network with gyrators.
+To analyze, follow the same procedure. Only the gain is different.
+
+mrc:
+Inverse Chebyshev 5th-order low-pass filter, realized by an active
+structure that is a model for a fully integrated realization unsing MOS
+transistors in place of the resistors. The circuit is normalized, and
+the output node number is 7. Note the non-observable poles in the real
+axis.
+
+opamp:
+An AC model for an operational amplifier in open loop. Set the normalization
+factors to about 2e8 rad/s and 50 Ohms, the expected numerator degree to 9,
+and turn on the "force degrees" option. Turn off the "normalized results"
+option. Plot the response from about 100 Hz to 1GHz, with gain limits between
+0 and 120 dB. The output node number is 1.
+This is a typical example of a difficult circuit, that must be normalized
+for correct analysis.
+
+m567:
+Normalized Tesla magnifier circuit, operating in mode 5, 6, 7. An initial
+energy in C1 (represented by VC1) is transferred to C3 with voltage gain
+after a linear transient.
+
